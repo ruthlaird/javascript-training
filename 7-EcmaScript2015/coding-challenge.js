@@ -57,6 +57,10 @@ const sunsetBoulevard = new Street('Sunset Boulevard', 1982, 2.5, 5);
 
 const allStreets = [oceanAvenue, evergreenStreet, fourthStreet, sunsetBoulevard];
 
+function sum(list, getter) {
+    
+}
+
 function reportParks(p) {
     console.log('----PARKS REPORT----'); 
     let totalAge = 0;
@@ -76,6 +80,12 @@ function reportParks(p) {
             console.log(`${park.name} has more than 1000 trees.`);
         }
     });
+    
+    /*
+    parks.filter(p => p.trees > 1000);
+    parks.map(p = `${p.name} is heavily wooded`);
+    parks.forEach(console.log); //don't need to pass a parameter to console.log
+    */
 }
 
 function reportStreets(s) {
@@ -91,7 +101,17 @@ function reportStreets(s) {
     
     for (const street of s) {
         street.classifyStreet();
-    }    
+    }  
+   
+    /*
+    totalLength = streets
+    .map(s => s.length)
+    .reduce((current, next) => current + next, 0)
+    
+    //map [9] -> [9]
+    //filter [9] -> [0-9]
+    //reduce [9] -> x
+    */
 }
 
 reportParks(allParks);
