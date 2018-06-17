@@ -14,6 +14,7 @@ export default class Recipe {
             this.img = res.data.recipe.image_url;
             this.url = res.data.recipe.source_url;
             this.ingredients = res.data.recipe.ingredients;  
+            console.log(this.ingredients);
         } catch (error) {
             console.log(error);
             alert('Something went wrong getting the recipe :(');
@@ -33,9 +34,9 @@ export default class Recipe {
 
     parseIngredients() {
         //need to put the plurals in the array first otherwise will find match on the singular and return with the 's' suffix 
-        const unitsLong = ['tablesspoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
+        const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
-        const units = [...unitsShort, 'kg', 'g'];
+        const units = [...unitsShort, 'kg', 'g', 'ml'];
 
         const newIngredients = this.ingredients.map(el => {
             // 1) Uniform units
@@ -47,7 +48,16 @@ export default class Recipe {
             // 2) Remove parentheses
             ingredient = ingredient.replace(/ *\([^)]*\) */g, ' ');
 
-            // 3) Parse ingredients into count, unit and ingredient
+            // 3) Insert space between count and unit if not already there
+            units.forEach(u => {
+                const re = new RegExp(`([0-9\.]+)${u}`);
+                ingredient = ingredient.replace(re, `$1 ${u}`);
+            });
+            
+            // 4) Remove any preceeding space before comma
+            ingredient = ingredient.replace(' ,', ',');
+
+            // 5) Parse ingredients into count, unit and ingredient
             const arrIng = ingredient.split(' ');
             const unitIndex = arrIng.findIndex(el2 => units.includes(el2));
 
@@ -80,8 +90,11 @@ export default class Recipe {
                 } 
             } else if (unitIndex === -1) {
                     // There is NO unit and NO number in 1st position
+
+                    const c = (arrIng[0].charAt(0) === 'a') ? 'doNotDisplay' : 1;
+
                     objIng = {
-                        count: 1,
+                        count: c,
                         unit: '',
                         ingredient
                     }
